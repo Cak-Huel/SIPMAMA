@@ -69,10 +69,22 @@
                             @if ($pendaftar->rekom)
                                 <span class="text-sm font-medium text-green-600">✔ Terupload</span>
                             @else
-                                <form method="POST" action="{{ route('profil.rekom.upload') }}" enctype="multipart/form-data" class="flex items-center">
+                                <form method="POST" action="{{ route('profil.rekom.upload') }}" enctype="multipart/form-data" 
+                                    class="flex flex-col sm:flex-row items-start sm:items-center gap-2">
                                     @csrf
-                                    <input type="file" name="rekom" class="text-sm" required>
-                                    <button type="submit" class="ml-2 text-sm bg-blue-500 text-white py-1 px-2 rounded hover:bg-blue-600">Upload</button>
+                                    
+                                    <input type="file" name="rekom" required
+                                        class="block w-full text-sm text-gray-500
+                                                file:mr-4 file:py-2 file:px-4
+                                                file:rounded-full file:border-0
+                                                file:text-sm file:font-semibold
+                                                file:bg-blue-50 file:text-blue-700
+                                                hover:file:bg-blue-100">
+                                    
+                                    <button type="submit" class="w-full sm:w-auto bg-blue-600 text-white py-2 px-4 rounded-lg 
+                                    hover:bg-blue-700 text-sm font-medium transition-colors">
+                                        Upload
+                                    </button>
                                 </form>
                             @endif
                         </div>

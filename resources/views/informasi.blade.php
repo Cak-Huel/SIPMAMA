@@ -13,7 +13,7 @@
 {{-- "mengisi" konten ke dalam layout --}}
 @section('content')
 
-    <header class="relative bg-cover bg-center h-80" style="background-image: url('https://via.placeholder.com/1600x600/3B82F6/FFFFFF?text=Banner+Penerimaan+Magang+BPS');">
+    <header class="relative bg-gradient-to-r from-blue-600 to-blue-800 h-80">
         <div class="absolute inset-0 bg-blue-700/80 bg-gradient-to-r from-blue-800/80 to-blue-600/70"></div>
         
         <div class="relative z-10 h-full flex flex-col justify-center items-center text-center text-white px-4">
@@ -42,27 +42,39 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-start">
                 
                 <div>
-                    <img src="https://via.placeholder.com/600x850/EBF8FF/3B82F6?text=Contoh+Poster+Informasi+Magang" 
-                         alt="Poster Syarat & Ketentuan Magang BPS" 
-                         class="w-full rounded-lg shadow-lg">
+                    {{-- Ambil data poster dari controller/view composer --}}
+                    @php
+                        // Ambil path poster dari database (karena ini view publik, kita query manual dikit disini atau pass dari controller)
+                        $posterData = \App\Models\Pengaturan::where('key', 'poster_utama')->first();
+                    @endphp
+
+                    @if($posterData && $posterData->file_poster)
+                        <img src="{{ Storage::url($posterData->file_poster) }}" 
+                             alt="Poster Syarat & Ketentuan" 
+                             class="w-full rounded-lg shadow-lg hover:scale-105 transition-transform duration-300">
+                    @else
+                        <div class="w-full h-96 bg-gray-200 rounded-lg flex items-center justify-center text-gray-500">
+                            Poster Belum Tersedia
+                        </div>
+                    @endif
                 </div>
                 
                 <div class="prose prose-lg max-w-none">
-                    <h3 class="text-2xl font-semibold mb-4">Persyaratan Akademik</h3>
-                    <ul class="list-disc list-outside ml-5 space-y-2 text-gray-700">
-                        <li>Mahasiswa aktif (D3/D4/S1) minimal semester 5.</li>
-                        <li>IPK minimal 3.00 dari skala 4.00.</li>
-                        <li>Berasal dari program studi yang relevan (Statistika, IT, Ekonomi, dll).</li>
-                        <li>Mampu beradaptasi dan bekerja dalam tim.</li>
-                    </ul>
+                    <h3 class="text-2xl font-semibold mb-4">Persyaratan & Ketentuan</h3>
                     
-                    <h3 class="text-2xl font-semibold mt-8 mb-4">Dokumen Wajib (PDF)</h3>
+                    {{-- LOGIKA PINTAR: Mengubah tanda (-) menjadi Bullet HTML --}}
                     <ul class="list-disc list-outside ml-5 space-y-2 text-gray-700">
-                        <li>Proposal Magang yang disetujui Dosen Pembimbing.</li>
-                        <li>Surat Rekomendasi/Pengantar resmi dari Universitas.</li>
-                        <li>Transkrip Nilai terbaru.</li>
-                        <li>Curriculum Vitae (CV) terbaru.</li>
-                        <li>Semua file diunggah dalam format PDF (maks. 5MB per file).</li>
+                        @if($syarat)
+                            @foreach(explode(PHP_EOL, $syarat->isi_teks) as $poin)
+                                {{-- Hanya tampilkan jika baris tidak kosong --}}
+                                @if(trim($poin) != '') 
+                                    {{-- Hapus tanda '-' di awal kalimat jika ada, lalu tampilkan --}}
+                                    <li>{{ ltrim(trim($poin), '- ') }}</li>
+                                @endif
+                            @endforeach
+                        @else
+                            <li>Belum ada informasi syarat.</li>
+                        @endif
                     </ul>
                 </div>
 
@@ -80,46 +92,47 @@
                 <table class="w-full min-w-max bg-white">
                     <thead class="bg-gray-200">
                         <tr>
-                            <th class="p-3 text-left text-sm font-semibold text-gray-700">Bulan / Tahun</th>
-                            <th class="p-3 text-center text-sm font-semibold text-gray-700">Kuota Awal</th>
-                            <th class="p-3 text-center text-sm font-semibold text-gray-700">Kuota Tersisa</th>
-                            <th class="p-3 text-center text-sm font-semibold text-gray-700">Status</th>
+                            <th class="p-4 text-left text-sm font-bold text-gray-700 uppercase tracking-wider">Bulan / Tahun</th>
+                            <th class="p-4 text-center text-sm font-bold text-gray-700 uppercase tracking-wider">Kuota Awal</th>
+                            <th class="p-4 text-center text-sm font-bold text-gray-700 uppercase tracking-wider">Kuota Tersisa</th>
+                            <th class="p-4 text-center text-sm font-bold text-gray-700 uppercase tracking-wider">Status</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200">
-                        <tr>
-                            <td class="p-3 font-medium text-gray-800">Januari 2026</td>
-                            <td class="p-3 text-center text-gray-700">10</td>
-                            <td class="p-3 text-center text-gray-700">0</td>
-                            <td class="p-3 text-center">
-                                <span class="bg-red-100 text-red-700 font-bold py-1 px-3 rounded-full text-xs">
-                                    PENUH
+                        
+                        {{-- LOOPING DATA DARI CONTROLLER --}}
+                        @foreach($jadwalKuota as $item)
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="p-4 font-medium text-gray-800">
+                                {{ $item->periode }}
+                            </td>
+                            
+                            <td class="p-4 text-center text-gray-600 font-medium">
+                                {{ $item->kuota_awal }}
+                            </td>
+                            
+                            <td class="p-4 text-center">
+                                <span class="font-bold text-lg {{ $item->sisa == 0 ? 'text-red-600' : 'text-gray-800' }}">
+                                    {{ $item->sisa }}
+                                </span>
+                            </td>
+                            
+                            <td class="p-4 text-center">
+                                <span class="{{ $item->status_color }} font-bold py-1 px-3 rounded-full text-xs tracking-wide border border-opacity-20 border-current">
+                                    {{ $item->status_text }}
                                 </span>
                             </td>
                         </tr>
-                        <tr>
-                            <td class="p-3 font-medium text-gray-800">Februari 2026</td>
-                            <td class="p-3 text-center text-gray-700">10</td>
-                            <td class="p-3 text-center text-gray-700">5</td>
-                            <td class="p-3 text-center">
-                                <span class="bg-green-100 text-green-700 font-bold py-1 px-3 rounded-full text-xs">
-                                    TERSEDIA
-                                </span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="p-3 font-medium text-gray-800">Maret 2026</td>
-                            <td class="p-3 text-center text-gray-700">10</td>
-                            <td class="p-3 text-center text-gray-700">10</td>
-                            <td class="p-3 text-center">
-                                <span class="bg-green-100 text-green-700 font-bold py-1 px-3 rounded-full text-xs">
-                                    TERSEDIA
-                                </span>
-                            </td>
-                        </tr>
-                        </tbody>
+                        @endforeach
+                        {{-- AKHIR LOOPING --}}
+
+                    </tbody>
                 </table>
             </div>
+            
+            <p class="text-center text-gray-500 text-sm mt-4">
+                *Status diperbarui secara otomatis berdasarkan jumlah peserta aktif.
+            </p>
         </div>
     </section>
 

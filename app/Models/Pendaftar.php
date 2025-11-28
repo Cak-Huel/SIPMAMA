@@ -33,6 +33,9 @@ class Pendaftar extends Model
         'proposal',
         'rekom',
         'status',
+        'catatan',
+        'verified_by',
+        'verified_at',
     ];
 
     /**

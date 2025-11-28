@@ -69,7 +69,7 @@ class AuthController extends Controller
             // 3. Cek Role & Redirect (RBAC)
             $user = Auth::user();
             if ($user->role == 'admin') {
-                return redirect()('/admin/dashboard'); // Arahkan admin
+                return redirect('/admin/dashboard'); // Arahkan admin
             }
 
             return redirect('/dashboard'); // Arahkan mahasiswa
