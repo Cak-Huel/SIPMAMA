@@ -1,62 +1,77 @@
 # SIPMAMA
 Sistem yang digunakan sebagai penerimaan mahasiswa magang dan juga tempat presensi mahasiswa yang telah diterima oleh pihak instansi.
 
+<p align="center">Halaman Dashboard</p>
 ![Screenshot Aplikasi](screenshoot/dashboard.png)
-Halaman Dashboard
 
-![Screenshot Aplikasi](screenshoot/informasi.png)
-Halaman Informasi
-
-![Screenshot Aplikasi](screenshoot/galeri.png)
-Halaman Galeri
-
-![Screenshot Aplikasi](screenshoot/FAQ.png)
-Halaman FAQ
-
-![Screenshot Aplikasi](screenshoot/login.png)
-Halaman Login
-
-![Screenshot Aplikasi](screenshoot/daftar-akun.png)
-Halaman Daftar Akun
-
-![Screenshot Aplikasi](screenshoot/formulir.png)
-Halaman Formulir
-
+<p align="center">Halaman Profil</p>
 ![Screenshot Aplikasi](screenshoot/profil.png)
-Halaman Profil
 
+<p align="center">Halaman Presensi</p>
 ![Screenshot Aplikasi](screenshoot/presensi.png)
-Halaman Presensi
 
-![Screenshot Aplikasi](screenshoot/dashboard-admin.png)
-Halaman Dashboard Admin
-
-![Screenshot Aplikasi](screenshoot/kelola-pendaftar.png)
-Halaman Kelola Pendaftar
-
-![Screenshot Aplikasi](screenshoot/verifikasi.png)
-Halaman Verifikasi
-
-![Screenshot Aplikasi](screenshoot/kelola-informasi.png)
-Halaman Kelola Informasi
-
-![Screenshot Aplikasi](screenshoot/kelola-kuota.png)
-Halaman Kelola Kuota
-
-![Screenshot Aplikasi](screenshoot/kelola-galeri.png)
-Halaman Kelola Galeri
-
-![Screenshot Aplikasi](screenshoot/kelola-FAQ.png)
-Halaman Kelola FAQ
-
-![Screenshot Aplikasi](screenshoot/kelola-operator.png)
-Halaman Kelola Operator
-
+<p align="center">Halaman Data Presensi</p>
 ![Screenshot Aplikasi](screenshoot/data-presensi.png)
-Halaman Data Presensi
 
+<p align="center">Halaman Kelola Pendaftar</p>
+![Screenshot Aplikasi](screenshoot/kelola-pendaftar.png)
+
+<p align="center">Halaman Verifikasi</p>
+![Screenshot Aplikasi](screenshoot/verifikasi.png)
+
+<p align="center">Halaman Informasi</p>
+![Screenshot Aplikasi](screenshoot/informasi.png)
+
+<p align="center">Halaman Galeri</p>
+![Screenshot Aplikasi](screenshoot/galeri.png)
+
+<p align="center">Halaman FAQ</p>
+![Screenshot Aplikasi](screenshoot/FAQ.png)
+
+<p align="center">Halaman Login</p>
+![Screenshot Aplikasi](screenshoot/login.png)
+
+<p align="center">Halaman Daftar Akun</p>
+![Screenshot Aplikasi](screenshoot/daftar-akun.png)
+
+<p align="center">Halaman Formulir</p>
+![Screenshot Aplikasi](screenshoot/formulir.png)
+
+<p align="center">Halaman Profil</p>
+![Screenshot Aplikasi](screenshoot/profil.png)
+
+<p align="center">Halaman Presensi</p>
+![Screenshot Aplikasi](screenshoot/presensi.png)
+
+<p align="center">Halaman Dashboard Admin</p>
+![Screenshot Aplikasi](screenshoot/dashboard-admin.png)
+
+<p align="center">Halaman Kelola Pendaftar</p>
+![Screenshot Aplikasi](screenshoot/kelola-pendaftar.png)
+
+<p align="center">Halaman Verifikasi</p>
+![Screenshot Aplikasi](screenshoot/verifikasi.png)
+
+<p align="center">Halaman Kelola Informasi</p>
+![Screenshot Aplikasi](screenshoot/kelola-informasi.png)
+
+<p align="center">Halaman Kelola Kuota</p>
+![Screenshot Aplikasi](screenshoot/kelola-kuota.png)
+
+<p align="center">Halaman Kelola Galeri</p>
+![Screenshot Aplikasi](screenshoot/kelola-galeri.png)
+
+<p align="center">Halaman Kelola FAQ</p>
+![Screenshot Aplikasi](screenshoot/kelola-FAQ.png)
+
+<p align="center">Halaman Kelola Operator</p>
+![Screenshot Aplikasi](screenshoot/kelola-operator.png)
+
+<p align="center">Halaman Data Presensi</p>
+![Screenshot Aplikasi](screenshoot/data-presensi.png)
+
+<p align="center">Halaman Profil Admin</p>
 ![Screenshot Aplikasi](screenshoot/profil-admin.png)
-Halaman Profil Admin
 
 <<<<<<< HEAD
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
