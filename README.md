@@ -2,76 +2,61 @@
 Sistem yang digunakan sebagai penerimaan mahasiswa magang dan juga tempat presensi mahasiswa yang telah diterima oleh pihak instansi.
 
 <p align="center">Halaman Dashboard</p>
-![Screenshot Aplikasi](screenshoot/dashboard.png)
+<p align="center"><img src="screenshoot/dashboard.png" width="700" alt="Dashboard"></p>
 
 <p align="center">Halaman Profil</p>
-![Screenshot Aplikasi](screenshoot/profil.png)
+<p align="center"><img src="screenshoot/profil.png" width="700" alt="Profil"></p>
 
 <p align="center">Halaman Presensi</p>
-![Screenshot Aplikasi](screenshoot/presensi.png)
+<p align="center"><img src="screenshoot/presensi.png" width="700" alt="Presensi"></p>
 
 <p align="center">Halaman Data Presensi</p>
-![Screenshot Aplikasi](screenshoot/data-presensi.png)
+<p align="center"><img src="screenshoot/data-presensi.png" width="700" alt="Data Presensi"></p>
 
 <p align="center">Halaman Kelola Pendaftar</p>
-![Screenshot Aplikasi](screenshoot/kelola-pendaftar.png)
+<p align="center"><img src="screenshoot/kelola-pendaftar.png" width="700" alt="Kelola Pendaftar"></p>
 
 <p align="center">Halaman Verifikasi</p>
-![Screenshot Aplikasi](screenshoot/verifikasi.png)
+<p align="center"><img src="screenshoot/verifikasi.png" width="700" alt="Verifikasi"></p>
 
 <p align="center">Halaman Informasi</p>
-![Screenshot Aplikasi](screenshoot/informasi.png)
+<p align="center"><img src="screenshoot/informasi.png" width="700" alt="Informasi"></p>
 
 <p align="center">Halaman Galeri</p>
-![Screenshot Aplikasi](screenshoot/galeri.png)
+<p align="center"><img src="screenshoot/galeri.png" width="700" alt="Galeri"></p>
 
 <p align="center">Halaman FAQ</p>
-![Screenshot Aplikasi](screenshoot/FAQ.png)
+<p align="center"><img src="screenshoot/FAQ.png" width="700" alt="FAQ"></p>
 
 <p align="center">Halaman Login</p>
-![Screenshot Aplikasi](screenshoot/login.png)
+<p align="center"><img src="screenshoot/login.png" width="700" alt="Login"></p>
 
 <p align="center">Halaman Daftar Akun</p>
-![Screenshot Aplikasi](screenshoot/daftar-akun.png)
+<p align="center"><img src="screenshoot/daftar-akun.png" width="700" alt="Daftar Akun"></p>
 
 <p align="center">Halaman Formulir</p>
-![Screenshot Aplikasi](screenshoot/formulir.png)
-
-<p align="center">Halaman Profil</p>
-![Screenshot Aplikasi](screenshoot/profil.png)
-
-<p align="center">Halaman Presensi</p>
-![Screenshot Aplikasi](screenshoot/presensi.png)
+<p align="center"><img src="screenshoot/formulir.png" width="700" alt="Formulir"></p>
 
 <p align="center">Halaman Dashboard Admin</p>
-![Screenshot Aplikasi](screenshoot/dashboard-admin.png)
-
-<p align="center">Halaman Kelola Pendaftar</p>
-![Screenshot Aplikasi](screenshoot/kelola-pendaftar.png)
-
-<p align="center">Halaman Verifikasi</p>
-![Screenshot Aplikasi](screenshoot/verifikasi.png)
+<p align="center"><img src="screenshoot/dashboard-admin.png" width="700" alt="Dashboard Admin"></p>
 
 <p align="center">Halaman Kelola Informasi</p>
-![Screenshot Aplikasi](screenshoot/kelola-informasi.png)
+<p align="center"><img src="screenshoot/kelola-informasi.png" width="700" alt="Kelola Informasi"></p>
 
 <p align="center">Halaman Kelola Kuota</p>
-![Screenshot Aplikasi](screenshoot/kelola-kuota.png)
+<p align="center"><img src="screenshoot/kelola-kuota.png" width="700" alt="Kelola Kuota"></p>
 
 <p align="center">Halaman Kelola Galeri</p>
-![Screenshot Aplikasi](screenshoot/kelola-galeri.png)
+<p align="center"><img src="screenshoot/kelola-galeri.png" width="700" alt="Kelola Galeri"></p>
 
 <p align="center">Halaman Kelola FAQ</p>
-![Screenshot Aplikasi](screenshoot/kelola-FAQ.png)
+<p align="center"><img src="screenshoot/kelola-FAQ.png" width="700" alt="Kelola FAQ"></p>
 
 <p align="center">Halaman Kelola Operator</p>
-![Screenshot Aplikasi](screenshoot/kelola-operator.png)
-
-<p align="center">Halaman Data Presensi</p>
-![Screenshot Aplikasi](screenshoot/data-presensi.png)
+<p align="center"><img src="screenshoot/kelola-operator.png" width="700" alt="Kelola Operator"></p>
 
 <p align="center">Halaman Profil Admin</p>
-![Screenshot Aplikasi](screenshoot/profil-admin.png)
+<p align="center"><img src="screenshoot/profil-admin.png" width="700" alt="Profil Admin"></p>
 
 <<<<<<< HEAD
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
