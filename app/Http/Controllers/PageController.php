@@ -6,9 +6,13 @@ use Illuminate\Http\Request;
 use App\Models\Pengaturan;
 use App\Models\Pendaftar;
 use Carbon\Carbon;
+use App\Models\Galeri;
+use App\Models\Faq;
+use App\Models\KuotaPeriode;
 
 class PageController extends Controller
 {
+    // DASHBOARD ------------------------------------------------
     public function index()
     {
         // --- 1. AMBIL KUOTA MAKSIMUM (Global) ---
@@ -47,11 +51,12 @@ class PageController extends Controller
         return view('dashboard', compact('kuotaMax', 'magangBerjalan', 'perkiraanTersedia'));
     }
 
+    // HALAMAN INFORMASI ---------------------------------------------
     public function informasi()
     {
-        // 1. AMBIL KUOTA GLOBAL (Kapasitas Kantor/Lab)
-        $pengaturan = Pengaturan::where('key', 'kuota_global')->first();
-        $kuotaMax = $pengaturan ? (int) $pengaturan->isi_teks : 7; // Default 7
+        // 1. AMBIL KUOTA GLOBAL (DEFAULT)
+        $kuotaSetting = Pengaturan::firstOrCreate(['key' => 'kuota_global'], ['isi_teks' => '7']);
+        $defaultKuota = (int) $kuotaSetting->isi_teks;
 
         // 2. GENERATE DATA 4 BULAN KE DEPAN
         $jadwalKuota = [];
@@ -59,6 +64,12 @@ class PageController extends Controller
 
         for ($i = 0; $i < 4; $i++) {
             $date = $now->copy()->addMonths($i);
+            // Cek apakah ada kuota khusus bulan ini?
+            $kuotaKhusus = KuotaPeriode::where('bulan', $date->month)
+                ->where('tahun', $date->year)
+                ->first();
+            $kuotaMax = $kuotaKhusus ? $kuotaKhusus->kuota : $defaultKuota;
+
             $startOfMonth = $date->copy()->startOfMonth();
             $endOfMonth = $date->copy()->endOfMonth();
 
@@ -113,5 +124,21 @@ class PageController extends Controller
 
         // Kirim data ke view 'informasi'
         return view('informasi', compact('jadwalKuota', 'syarat'));
+    }
+
+    // FUNGSI HALAMAN GALERI ---------------------------------------------
+    public function showGaleri()
+    {
+        // Ambil semua galeri, urutkan dari yang terbaru
+        $galeri = Galeri::latest()->paginate(9); // Tampilkan 9 foto per halaman
+
+        return view('galeri', compact('galeri'));
+    }
+
+    // FUNGSI HALAMAN FAQ ---------------------------------------------
+    public function showFaq()
+    {
+        $faqs = Faq::all(); // Ambil semua data
+        return view('faq', compact('faqs'));
     }
 }

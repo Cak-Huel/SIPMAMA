@@ -73,7 +73,7 @@ class PresensiController extends Controller
         if ($request->hasFile('bukti_file')) {
             $file = $request->file('bukti_file');
             $filename = 'presensi_' . $pendaftarId . '_' . time() . '.' . $file->extension();
-            $filePath = $file->storeAs('public/presensi', $filename);
+            $filePath = $file->storeAs('presensi', $filename, 'public');
         }
 
         // --- SIMPAN KE DB ---

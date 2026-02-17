@@ -4,12 +4,15 @@
 {{-- "mengisi" ke dalam @yield('content') di template --}}
 @section('content')
 
-    <header class="relative bg-cover bg-center h-[450px]" style="background-image: url('{{ asset('images/Gedung.png') }}');">
+    <header class="relative bg-cover bg-center h-[450px]" style="background-image: url('{{ asset('images/Gedung.jpg') }}');">
         <div class="absolute inset-0 bg-blue-700/80 bg-gradient-to-r from-blue-800/80 to-blue-600/70" style="
     background-color: rgb(29 78 216 / -0.2);"></div>
         <div class="relative z-10 h-full flex flex-col justify-center items-center text-center text-white px-4">
-            <h1 class="text-4xl md:text-5xl font-bold mb-4 text-justify-center">
+            <h1 class="text-4xl md:text-4xl font-bold mb-2 text-justify-center">
                 Selamat Datang
+            </h1>
+            <h1 class="text-4xl md:text-5xl font-bold mb-1 text-justify-center">
+                SIPMAMA
             </h1>
             <h2 class="text-2xl md:text-3xl font-bold mb-1 text-justify-center">
                 Sistem Penerimaan Mahasiswa Magang
@@ -39,6 +42,40 @@
     </header>
 
     <main>
+        <section class="py-16 bg-white border-b border-gray-100">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col md:flex-row items-center gap-12">
+                    
+                    <div class="md:w-1/2">
+                        <div class="inline-block px-3 py-1 mb-4 text-xs font-semibold tracking-wider text-blue-600 uppercase bg-blue-100 rounded-full">
+                            Tentang Sistem
+                        </div>
+                        <h2 class="text-3xl font-bold text-gray-900 mb-4">
+                            Apa itu <span class="text-blue-600">SIPMAMA</span>?
+                        </h2>
+                        <p class="text-gray-600 text-lg leading-relaxed mb-6 text-justify">
+                            <strong>SIPMAMA</strong> (Sistem Penerimaan Mahasiswa Magang) adalah platform resmi Badan Pusat Statistik (BPS) Kabupaten Lamongan 
+                            yang dirancang khusus untuk memfasilitasi proses pendaftaran, verifikasi, dan monitoring kegiatan magang mahasiswa
+                        <p class="text-gray-600 text-lg leading-relaxed text-justify">
+                            Sistem ini bertujuan untuk menjembatani kebutuhan antara institusi pendidikan dan peluang praktik kerja di lingkungan BPS secara efisien, transparan, dan terstruktur.
+                        </p>
+                    </div>
+
+                    <div class="md:w-1/2 flex justify-center">
+                        <div class="relative w-full max-w-md">
+                            <div class="absolute top-0 -left-4 w-72 h-72 bg-blue-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
+                            <div class="absolute top-0 -right-4 w-72 h-72 bg-purple-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
+                            
+                            <img src="{{ asset('images/bps.jpg') }}" 
+                                alt="Ilustrasi SIPMAMA" 
+                                class="relative rounded-2xl shadow-2xl rotate-2 hover:rotate-0 transition-transform duration-500 border-4 border-white">
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
         <section class="py-16 bg-white">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                 <h2 class="text-3xl font-bold text-center text-gray-800 mb-12">

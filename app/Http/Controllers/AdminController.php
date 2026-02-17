@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\StreamedResponse; // Untuk Export CSV
 use Illuminate\Support\Facades\Auth;
 use App\Models\Presensi;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\StatusPendaftaranMail;
+use Illuminate\Support\Facades\Log;
 
 class AdminController extends Controller
 {
@@ -126,7 +129,7 @@ class AdminController extends Controller
         // Tentukan path berdasarkan jenis
         $path = ($jenis == 'proposal') ? $pendaftar->proposal : $pendaftar->rekom;
 
-        if (!$path || !Storage::exists($path)) {
+        if (!$path || !Storage::disk('public')->exists($path)) {
             return back()->with('error', 'File tidak ditemukan.');
         }
 
@@ -136,9 +139,8 @@ class AdminController extends Controller
         $cleanName = str_replace(' ', '_', $pendaftar->nama_lengkap);
         $downloadName = ucfirst($jenis) . '_' . $cleanName . '.' . $ext;
 
-        return Storage::download($path, $downloadName);
+        return response()->download(Storage::disk('public')->path($path), $downloadName);
     }
-
     // EKSPOR KE CSV (Ringan & Cepat)----------------------------------------------------
     public function exportCsv(Request $request)
     {
@@ -197,24 +199,27 @@ class AdminController extends Controller
         $pendaftar = Pendaftar::findOrFail($id);
         $path = ($jenis == 'proposal') ? $pendaftar->proposal : $pendaftar->rekom;
 
-        if (!$path || !Storage::exists($path)) {
+        if (!$path || !Storage::disk('public')->exists($path)) {
             abort(404);
         }
 
-        // 'response()->file()' akan membuka file di browser (inline)
-        return response()->file(Storage::path($path));
+        return response()->file(Storage::disk('public')->path($path));
     }
 
-    // 8. PROSES VERIFIKASI (UPDATE STATUS) ------------------------------------------------
+// 8. PROSES VERIFIKASI (UPDATE STATUS) ------------------------------------------------
     public function updateStatus(Request $request, $id)
     {
         $pendaftar = Pendaftar::findOrFail($id);
 
         // Validasi Input
         $request->validate([
-            'status' => 'required|in:lolos,ditolak',
-            'catatan' => 'required|string',
+            'status' => 'required|in:lolos,ditolak_kuota,perlu_revisi',
         ]);
+
+        // Validasi Tambahan: Catatan Wajib jika BUKAN Lolos
+        if ($request->status !== 'lolos' && empty($request->catatan)) {
+            return back()->with('error', 'Catatan wajib diisi untuk status Penolakan atau Revisi.');
+        }
 
         // Update Data
         $pendaftar->update([
@@ -224,7 +229,25 @@ class AdminController extends Controller
             'verified_at' => now(),      // Waktu sekarang
         ]);
 
-        // (Opsional) Di sini nanti kita bisa kirim Email Notifikasi ke Mahasiswa
+        // --- LOGIKA EMAIL NOTIFIKASI ---
+        // Cek apakah pendaftar punya akun user & email valid
+        if ($pendaftar->user && $pendaftar->user->email) {
+
+            // Siapkan paket data
+            $emailData = [
+                'nama' => $pendaftar->nama_lengkap,
+                'status' => $request->status,
+                'catatan' => $request->catatan,
+            ];
+
+            // Kirim Email (Gunakan try-catch agar kalau internet mati, sistem tidak crash)
+            try {
+                Mail::to($pendaftar->user->email)->send(new StatusPendaftaranMail($emailData));
+            } catch (\Exception $e) {
+                // Biarkan error diam-diam atau log ke file, jangan hentikan proses admin
+                Log::error('Gagal kirim email: ' . $e->getMessage());
+            }
+        }
 
         return redirect()->route('admin.pendaftar.index')
             ->with('success', 'Status pendaftar berhasil diperbarui menjadi: ' . strtoupper($request->status));

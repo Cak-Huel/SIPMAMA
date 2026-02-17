@@ -16,9 +16,10 @@ class IsAdmin
             return redirect()->route('login');
         }
 
-        // 2. Cek apakah role-nya 'admin'?
-        if (Auth::user()->role !== 'admin') {
-            // Jika bukan admin (misal mahasiswa)
+        // Izinkan Admin ATAU Operator
+        $userRole = Auth::user()->role;
+        if ($userRole !== 'admin' && $userRole !== 'operator') {
+            // Jika bukan admin DAN bukan operator (misal mahasiswa).
             return redirect()->route('home')->with('error', 'Anda tidak memiliki akses ke halaman Admin.');
         }
 

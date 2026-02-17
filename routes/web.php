@@ -6,84 +6,117 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\FormulirController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\PresensiController;
+use App\Http\Controllers\InformasiController;
+use App\Http\Controllers\Admin\PenggunaController;
+use App\Http\Controllers\Admin\AdminProfileController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\Request;
 
-// UNTUK LOGIN
+/*
+|--------------------------------------------------------------------------
+| Rute Publik (Bisa diakses siapa saja)
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/', [PageController::class, 'index'])->name('home');
+Route::get('/informasi', [PageController::class, 'informasi'])->name('informasi');
+Route::get('/galeri', [PageController::class, 'showGaleri'])->name('galeri.index');
+Route::get('/faq', [PageController::class, 'showFaq'])->name('faq.index');
+
+/*
+|--------------------------------------------------------------------------
+| Rute Autentikasi & Verifikasi Email
+|--------------------------------------------------------------------------
+*/
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
-Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
-// DASHBOARD
-Route::get('/dashboard', [PageController::class, 'index'])->name('dashboard');
-Route::get('/', [PageController::class, 'index'])->name('home');
-
-// HALAMAN FORMULIR PENDAFTARAN (HANYA BISA DIAKSES JIKA SUDAH LOGIN)
-Route::get('/formulir-pendaftaran', [FormulirController::class, 'showForm'])
-    ->middleware('auth')
-    ->name('pendaftaran.form');
-Route::post('/formulir-pendaftaran', [FormulirController::class, 'submitForm'])
-    ->middleware('auth')
-    ->name('pendaftaran.submit');
-
-// UNTUK LOGOUT
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-
-// HALAMAN INFORMASI
-Route::get('/informasi', [PageController::class, 'informasi'])->name('informasi');
-
-// HALAMAN PROFIL USER
-Route::middleware('auth')->group(function () {
-    // 1. Menampilkan halaman profil
-    Route::get('/profil', [ProfileController::class, 'show'])->name('profil.show');
-    // 2. Menerima file 'rekomendasi' yang di-upload dari profil
-    Route::post('/profil/upload-rekom', [ProfileController::class, 'uploadRekom'])->name('profil.rekom.upload');
-    // 3. Menghapus akun
-    Route::post('/profil/delete', [ProfileController::class, 'destroy'])->name('profil.destroy');
-    // presensi routes
-    // PRESENSI
-    Route::get('/presensi', [\App\Http\Controllers\PresensiController::class, 'index'])->name('presensi.index');
-    Route::post('/presensi', [\App\Http\Controllers\PresensiController::class, 'store'])->name('presensi.store');
+// Batasi 3 kali percobaan per menit untuk IP yang sama
+Route::middleware('throttle:3,1')->group(function () {
+    Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
+    Route::post('/register', [AuthController::class, 'register']);
 });
 
-// HALAMAN ADMIN (HANYA BISA DIAKSES OLEH ADMIN)
-Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-    // Dashboard Admin
-    // URL: /admin/dashboard
-    // Nama Rute: admin.dashboard
+// Alur Verifikasi Email
+Route::get('/email/verify', function () {
+    return view('auth.verify');
+})->middleware('auth')->name('verification.notice');
+
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill();
+    return redirect()->route('dashboard')->with('success', 'Email berhasil diverifikasi! Selamat datang.');
+})->middleware(['auth', 'signed'])->name('verification.verify');
+
+Route::post('/email/verification-notification', function (Request $request) {
+    $request->user()->sendEmailVerificationNotification();
+    return back()->with('message', 'Tautan verifikasi baru telah dikirim ke email Anda!');
+})->middleware(['auth', 'throttle:6,1'])->name('verification.send');
+
+/*
+|--------------------------------------------------------------------------
+| Rute Pengguna (Wajib Login & Verifikasi Email)
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/dashboard', [PageController::class, 'index'])->name('dashboard');
+    // Formulir Pendaftaran
+    Route::get('/formulir-pendaftaran', [FormulirController::class, 'showForm'])->name('pendaftaran.form');
+    Route::post('/formulir-pendaftaran', [FormulirController::class, 'submitForm'])->name('pendaftaran.submit');
+    Route::get('/formulir-revisi', [FormulirController::class, 'editForm'])->name('pendaftaran.edit');
+    Route::put('/formulir-revisi', [FormulirController::class, 'updateForm'])->name('pendaftaran.update');
+    Route::get('/preview/{jenis}', [FormulirController::class, 'previewDokumen'])->name('pendaftaran.preview');
+
+    // Profil Pengguna
+    Route::get('/profil', [ProfileController::class, 'show'])->name('profil.show');
+    Route::post('/profil/upload-proposal', [ProfileController::class, 'UploadProposal'])->name('profil.proposal.upload');
+    Route::post('/profil/delete', [ProfileController::class, 'destroy'])->name('profil.destroy');
+
+    // PRESENSI
+    Route::get('/presensi', [PresensiController::class, 'index'])->name('presensi.index');
+    Route::post('/presensi', [PresensiController::class, 'store'])->name('presensi.store');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Rute Panel Admin (Wajib Login & Role Admin)
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
 
-    // MENU PENDAFTAR
+    // Kelola Pendaftar
     Route::get('/pendaftar', [AdminController::class, 'pendaftar'])->name('pendaftar.index');
-
-    // AKSI DOWNLOAD
-    Route::get('/pendaftar/{id}/download/{jenis}', [AdminController::class, 'downloadDokumen'])->name('pendaftar.download');
-
-    // AKSI EKSPOR
     Route::get('/pendaftar/export', [AdminController::class, 'exportCsv'])->name('pendaftar.export');
-
-    // HALAMAN VERIFIKASI
     Route::get('/pendaftar/{id}', [AdminController::class, 'show'])->name('pendaftar.show');
-
-    // UPDATE STATUS (AKSI)
     Route::patch('/pendaftar/{id}/update', [AdminController::class, 'updateStatus'])->name('pendaftar.update');
-
-    // PREVIEW PDF
+    Route::get('/pendaftar/{id}/download/{jenis}', [AdminController::class, 'downloadDokumen'])->name('pendaftar.download');
     Route::get('/pendaftar/{id}/preview/{jenis}', [AdminController::class, 'previewDokumen'])->name('pendaftar.preview');
 
-    // Di dalam group admin:
-    Route::get('/informasi', [\App\Http\Controllers\InformasiController::class, 'index'])->name('informasi.index');
+    // Kelola Informasi & Konten
+    Route::get('/informasi', [InformasiController::class, 'index'])->name('informasi.index');
+    Route::post('/informasi/kuota/global', [InformasiController::class, 'updateKuotaGlobal'])->name('informasi.kuota.global');
+    Route::post('/informasi/kuota/periode', [InformasiController::class, 'updateKuotaPeriode'])->name('informasi.kuota.periode');
+    Route::post('/informasi/konten/update', [InformasiController::class, 'updateKonten'])->name('informasi.konten.update');
+    Route::post('/informasi/faq/store', [InformasiController::class, 'storeFaq'])->name('informasi.faq.store');
+    Route::delete('/informasi/faq/{id}', [InformasiController::class, 'destroyFaq'])->name('informasi.faq.destroy');
+    Route::post('/informasi/galeri/store', [InformasiController::class, 'storeGaleri'])->name('informasi.galeri.store');
+    Route::delete('/informasi/galeri/{id}', [InformasiController::class, 'destroyGaleri'])->name('informasi.galeri.destroy');
 
-    // RUTE BARU: Update Kuota Global
-    Route::post('/informasi/kuota/update', [\App\Http\Controllers\InformasiController::class, 'updateKuotaGlobal'])->name('informasi.kuota.update');
-
-    // Rute Konten Statis (Tetap)
-    Route::post('/informasi/konten/update', [\App\Http\Controllers\InformasiController::class, 'updateKonten'])->name('informasi.konten.update');
-
-    // MENU PRESENSI
+    // Kelola Presensi
     Route::get('/presensi', [AdminController::class, 'presensi'])->name('presensi.index');
+    Route::get('/presensi/export', [AdminController::class, 'exportPresensiCsv'])->name('presensi.export');
     Route::get('/presensi/{id}/download', [AdminController::class, 'downloadBukti'])->name('presensi.download');
 
-    // EKSPOR PRESENSI
-    Route::get('/presensi/export', [AdminController::class, 'exportPresensiCsv'])->name('presensi.export');
+    // Kelola Pengguna (Operator)
+    Route::get('/pengguna', [PenggunaController::class, 'index'])->name('pengguna.index');
+    Route::get('/pengguna/create', [PenggunaController::class, 'create'])->name('pengguna.create');
+    Route::post('/pengguna', [PenggunaController::class, 'store'])->name('pengguna.store');
+    Route::delete('/pengguna/{id}', [PenggunaController::class, 'destroy'])->name('pengguna.destroy');
+
+    // Profil Admin
+    Route::get('/profile', [AdminProfileController::class, 'index'])->name('profile.index');
+    Route::put('/profile', [AdminProfileController::class, 'update'])->name('profile.update');
 });

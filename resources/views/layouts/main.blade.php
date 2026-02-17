@@ -22,6 +22,8 @@
                     <div class="hidden md:flex items-center--justify-center space-x-6">
                         <a href="{{ route('home') }}" class="text-gray-700 hover:text-blue-600 font-medium">Beranda</a>
                         <a href="{{ route('informasi') }}" class="text-gray-700 hover:text-blue-600 font-medium">Informasi</a>
+                        <a href="{{ route('galeri.index') }}" class="text-gray-700 hover:text-blue-600 font-medium">Galeri</a>
+                        <a href="{{ route('faq.index') }}" class="text-gray-700 hover:text-blue-600 font-medium">FAQ</a>
                         
                         @auth
                             @if(Auth::user()->pendaftar && Auth::user()->pendaftar->status == 'lolos')
@@ -68,6 +70,8 @@
             <div class="px-2 pt-2 pb-3 space-y-1">
                 <a href="{{ route('home') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50">Beranda</a>
                 <a href="{{ route('informasi') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50">Informasi</a>
+                <a href="{{ route('galeri.index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50">Galeri</a>
+                <a href="{{ route('faq.index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50">FAQ</a>
                @auth
                     @if(Auth::user()->pendaftar && Auth::user()->pendaftar->status == 'lolos')
                         <a href="{{ route('presensi.index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50">Presensi</a>
@@ -216,6 +220,7 @@
         </div>
     </footer>
 
+    {{-- Tombol WA Admin --}}
     <a href="https://wa.me/+6281339708428" target="_blank" 
        class="fixed bottom-6 right-6 z-50 bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-xl transition-transform transform hover:scale-110 flex items-center justify-center group"
        title="Hubungi Admin via WhatsApp">
@@ -228,5 +233,28 @@
             Hubungi Kami
         </span>
     </a>
+
+    {{--s NOTIFIKASI KHUSUS + TOMBOL WA --}}
+        @if (session('success_wa'))
+            <div x-data="{ show: true }" x-show="show" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                <div class="bg-white rounded-lg shadow-xl p-8 max-w-md text-center">
+                    <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
+                        <svg class="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Data Berhasil Dikirim!</h3>
+                    <p class="text-gray-500 mb-6">Silakan konfirmasi ke Admin agar berkas Anda segera diperiksa ulang.</p>
+                    
+                    <a href="{{ session('success_wa') }}" target="_blank" class="block w-full bg-green-500 text-white font-bold py-3 px-4 rounded hover:bg-green-600 transition-colors mb-3">
+                        💬 Chat Admin via WhatsApp
+                    </a>
+                    
+                    <button @click="show = false" class="text-gray-400 hover:text-gray-600 text-sm underline">
+                        Tutup
+                    </button>
+                </div>
+            </div>
+        @endif
 </body>
 </html>

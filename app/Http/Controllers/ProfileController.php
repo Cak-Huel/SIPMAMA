@@ -35,11 +35,11 @@ class ProfileController extends Controller
     }
 
     // Meng-upload surat rekomendasi dari halaman profil.
-    public function uploadRekom(Request $request)
+    public function UploadProposal(Request $request)
     {
         // 1. Validasi file
         $request->validate([
-            'rekom' => 'required|file|mimes:pdf|max:5120', // Wajib, PDF, Maks 5MB
+            'proposal' => 'required|file|mimes:pdf|max:5120', // Wajib, PDF, Maks 5MB
         ]);
 
         // 2. Temukan data pendaftar
@@ -51,20 +51,20 @@ class ProfileController extends Controller
         }
 
         // 3. Hapus file lama jika ada (opsional tapi bagus)
-        if ($pendaftar->rekom) {
-            Storage::delete($pendaftar->rekom);
+        if ($pendaftar->proposal) {
+            Storage::delete($pendaftar->proposal);
         }
 
         // 4. Upload file baru
-        $file = $request->file('rekom');
-        $filename = $pendaftar->nim . '_rekom_' . time() . '.' . $file->extension();
-        $rekomPath = $file->storeAs('public/rekomendasi', $filename);
+        $file = $request->file('proposal');
+        $filename = $pendaftar->nim . '_proposal_' . time() . '.' . $file->extension();
+        $proposalPath = $file->storeAs('proposal', $filename, 'public');
 
         // 5. Update database
-        $pendaftar->rekom = $rekomPath;
+        $pendaftar->proposal = $proposalPath;
         $pendaftar->save();
 
-        return back()->with('success', 'Surat rekomendasi berhasil di-upload!');
+        return back()->with('success', 'Proposal berhasil di-upload!');
     }
 
     // Menghapus (anonimisasi) akun pengguna.

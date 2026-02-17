@@ -19,6 +19,15 @@
                     <div>
                         <span class="font-medium text-gray-500">Email:</span>
                         <span class="text-gray-800">{{ $user->email }}</span>
+                        @if ($user->hasVerifiedEmail())
+                            <span class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                ✅ Terverifikasi
+                            </span>
+                        @else
+                            <span class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                ❌ Belum Verifikasi
+                            </span>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -36,28 +45,48 @@
                             <span class="text-base font-semibold py-2 px-4 rounded-lg bg-yellow-100 text-yellow-800">
                                 🟡 MENUNGGU VERIFIKASI
                             </span>
+                        
                         @elseif ($pendaftar->status == 'lolos')
                             <span class="text-base font-semibold py-2 px-4 rounded-lg bg-green-100 text-green-800">
-                                ✅ LOLOS
+                                ✅ LOLOS / DITERIMA
                             </span>
-                            <p class="text-gray-600 mt-2">Selamat! Anda diterima untuk periode 
-                                {{ \Carbon\Carbon::parse($pendaftar->tgl_start)->format('d M Y') }} 
-                                s/d 
-                                {{ \Carbon\Carbon::parse($pendaftar->tgl_end)->format('d M Y') }}.
-                            </p>
-                        @elseif ($pendaftar->status == 'ditolak')
+                            <p class="text-gray-600 mt-2">Selamat! Anda diterima...</p>
+
+                        {{-- STATUS BARU: DITOLAK KUOTA --}}
+                        @elseif ($pendaftar->status == 'ditolak_kuota')
                             <span class="text-base font-semibold py-2 px-4 rounded-lg bg-red-100 text-red-800">
-                                ❌ DITOLAK
+                                ❌ MOHON MAAF, KUOTA PENUH
                             </span>
-                            <p class="text-gray-600 mt-2">Maaf, pendaftaran Anda ditolak. Anda dapat mendaftar kembali untuk periode selanjutnya.</p>
+                            <div class="mt-3 p-4 bg-red-50 border border-red-200 rounded text-sm text-red-700">
+                                <strong>Catatan Admin:</strong><br>
+                                {{ $pendaftar->catatan }}
+                            </div>
+                            <p class="text-gray-600 mt-2 text-sm">Silakan mendaftar kembali di periode bulan berikutnya.</p>
+
+                        {{-- STATUS BARU: PERLU REVISI --}}
+                        @elseif ($pendaftar->status == 'perlu_revisi')
+                            <span class="text-base font-semibold py-2 px-4 rounded-lg bg-orange-100 text-orange-800">
+                                ⚠️ PERLU REVISI DATA
+                            </span>
+                            
+                            <div class="mt-4 p-4 bg-orange-50 border-l-4 border-orange-500 rounded shadow-sm">
+                                <h4 class="font-bold text-orange-700 mb-1">Instruksi Perbaikan:</h4>
+                                <p class="text-gray-700">{{ $pendaftar->catatan }}</p>
+                                
+                                <div class="mt-4">
+                                    <a href="{{ route('pendaftaran.edit') }}" class="inline-block bg-orange-600 text-white font-bold py-2 px-6 rounded hover:bg-orange-700 transition-colors">
+                                        ✏️ Perbaiki Data & Upload Ulang
+                                    </a>
+                                </div>
+                            </div>
                         @endif
                     </div>
 
                     <h3 class="text-lg font-semibold text-gray-600 mb-3">Status Dokumen</h3>
                     <div class="space-y-4">
                         <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                            <span class="font-medium">Proposal Magang</span>
-                            @if ($pendaftar->proposal)
+                            <span class="font-medium">Surat Rekomendasi</span>
+                            @if ($pendaftar->rekom)
                                 <span class="text-sm font-medium text-green-600">✔ Terupload</span>
                             @else
                                 <span class="text-sm font-medium text-red-600">✖ Belum Upload</span>
@@ -65,15 +94,15 @@
                         </div>
 
                         <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                            <span class="font-medium">Surat Rekomendasi</span>
-                            @if ($pendaftar->rekom)
+                            <span class="font-medium">Proposal Magang</span>
+                            @if ($pendaftar->proposal)
                                 <span class="text-sm font-medium text-green-600">✔ Terupload</span>
                             @else
-                                <form method="POST" action="{{ route('profil.rekom.upload') }}" enctype="multipart/form-data" 
+                                <form method="POST" action="{{ route('profil.proposal.upload') }}" enctype="multipart/form-data" 
                                     class="flex flex-col sm:flex-row items-start sm:items-center gap-2">
                                     @csrf
                                     
-                                    <input type="file" name="rekom" required
+                                    <input type="file" name="proposal" required
                                         class="block w-full text-sm text-gray-500
                                                 file:mr-4 file:py-2 file:px-4
                                                 file:rounded-full file:border-0
@@ -88,7 +117,7 @@
                                 </form>
                             @endif
                         </div>
-                        @error('rekom') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                        @error('proposal') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                     </div>
 
                 @else

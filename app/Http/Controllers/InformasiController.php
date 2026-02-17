@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
+use App\Models\Faq;
+use App\Models\Galeri;
+use App\Models\KuotaPeriode;
+use Illuminate\Support\Facades\Gate;
 
 class InformasiController extends Controller
 {
@@ -16,39 +20,44 @@ class InformasiController extends Controller
     // HALAMAN UTAMA (TABS) -------------------------------------------
     public function index()
     {
-        // 1. AMBIL SETTING KUOTA GLOBAL (Default 7 jika belum diatur)
+        // 1. AMBIL KUOTA DEFAULT (GLOBAL)
         $kuotaSetting = Pengaturan::firstOrCreate(
             ['key' => 'kuota_global'],
-            ['judul' => 'Kuota Maksimal Magang', 'isi_teks' => '7']
+            ['judul' => 'Kuota Default', 'isi_teks' => '7']
         );
-        $kuotaMax = (int) $kuotaSetting->isi_teks;
+        $defaultKuota = (int) $kuotaSetting->isi_teks;
 
-        // 2. HITUNG KETERSEDIAAN 12 BULAN KE DEPAN
-        // Logika: Cek berapa orang yang 'Lolos' dan 'Aktif' di bulan tersebut
+        // 2. LOOPING 12 BULAN KE DEPAN
         $lowonganList = [];
         $now = Carbon::now();
 
         for ($i = 0; $i < 12; $i++) {
             $date = $now->copy()->addMonths($i);
+            $bulan = $date->month;
+            $tahun = $date->year;
 
-            // Tentukan awal dan akhir bulan yang sedang dicek
+            // --- LOGIKA BARU: CEK KUOTA SPESIFIK ---
+            // Cari apakah bulan ini punya settingan khusus di database?
+            $kuotaKhusus = KuotaPeriode::where('bulan', $bulan)
+                ->where('tahun', $tahun)
+                ->first();
+
+            // Jika ada khusus, pakai itu. Jika tidak, pakai default global.
+            $kuotaMax = $kuotaKhusus ? $kuotaKhusus->kuota : $defaultKuota;
+
+            // --- HITUNG TERISI (LOGIKA LAMA - OVERLAP) ---
             $startOfMonth = $date->copy()->startOfMonth();
             $endOfMonth = $date->copy()->endOfMonth();
 
-            // QUERY AJAIB: Mencari irisan tanggal (Overlap)
-            // "Ambil pendaftar LOLOS yang masa magangnya BERSINGGUNGAN dengan bulan ini"
             $terisi = Pendaftar::where('status', 'lolos')
                 ->where(function ($query) use ($startOfMonth, $endOfMonth) {
                     $query->where(function ($q) use ($startOfMonth, $endOfMonth) {
-                        // Kasus A: Magang mulai di dalam bulan ini
                         $q->whereBetween('tgl_start', [$startOfMonth, $endOfMonth]);
                     })
                         ->orWhere(function ($q) use ($startOfMonth, $endOfMonth) {
-                            // Kasus B: Magang selesai di dalam bulan ini
                             $q->whereBetween('tgl_end', [$startOfMonth, $endOfMonth]);
                         })
                         ->orWhere(function ($q) use ($startOfMonth, $endOfMonth) {
-                            // Kasus C: Magang mulai sebelum bulan ini DAN selesai setelah bulan ini (Full 1 bulan ada)
                             $q->where('tgl_start', '<', $startOfMonth)
                                 ->where('tgl_end', '>', $endOfMonth);
                         });
@@ -57,10 +66,9 @@ class InformasiController extends Controller
 
             $sisa = $kuotaMax - $terisi;
 
-            // Status warna/label untuk UI
+            // Status Warna
             $statusLabel = 'Tersedia';
             $statusColor = 'text-green-600';
-
             if ($sisa <= 0) {
                 $sisa = 0;
                 $statusLabel = 'Penuh';
@@ -71,9 +79,12 @@ class InformasiController extends Controller
             }
 
             $lowonganList[] = (object) [
+                'bulan' => $bulan, // Butuh untuk form update
+                'tahun' => $tahun, // Butuh untuk form update
                 'nama_bulan' => $date->translatedFormat('F Y'),
                 'kuota_max' => $kuotaMax,
-                'terisi' => $terisi, // Estimasi terisi di bulan itu
+                'is_custom' => $kuotaKhusus ? true : false, // Penanda visual
+                'terisi' => $terisi,
                 'sisa' => $sisa,
                 'status_label' => $statusLabel,
                 'status_color' => $statusColor
@@ -83,8 +94,10 @@ class InformasiController extends Controller
         // --- KONTEN STATIS LAINNYA ---
         $syarat = Pengaturan::firstOrCreate(['key' => 'syarat_ketentuan'], ['judul' => 'Syarat', 'isi_teks' => '-']);
         $poster = Pengaturan::firstOrCreate(['key' => 'poster_utama'], ['judul' => 'Poster', 'file_poster' => null]);
+        $faqs = Faq::all();
+        $galeris = Galeri::latest()->get();
 
-        return view('admin.informasi.index', compact('lowonganList', 'kuotaSetting', 'syarat', 'poster'));
+        return view('admin.informasi.index', compact('lowonganList', 'kuotaSetting', 'syarat', 'poster', 'faqs', 'galeris'));
     }
 
     // UPDATE KUOTA GLOBAL --------------------------------------------------------
@@ -97,6 +110,9 @@ class InformasiController extends Controller
         Pengaturan::where('key', 'kuota_global')->update([
             'isi_teks' => $request->kuota_global
         ]);
+
+        // CEGAH OPERATOR MASUK SINI
+        Gate::authorize('admin-only');
 
         return back()->with('success', 'Kuota Global berhasil diperbarui. Perhitungan ketersediaan bulan depan otomatis menyesuaikan.');
     }
@@ -140,5 +156,97 @@ class InformasiController extends Controller
         }
 
         return back()->with('success', 'Konten statis berhasil diperbarui.');
+    }
+
+    // FUNGSI CRUD FAQ ------------------------------------------------
+    public function storeFaq(Request $request)
+    {
+        $request->validate([
+            'pertanyaan' => 'required|string|max:255',
+            'jawaban' => 'required|string',
+        ]);
+
+        Faq::create($request->all());
+
+        return back()->with('success', 'FAQ berhasil ditambahkan.');
+    }
+
+    public function destroyFaq($id)
+    {
+        Faq::destroy($id);
+        return back()->with('success', 'FAQ berhasil dihapus.');
+    }
+
+    // CRUD GALERI ------------------------------------------------
+
+    public function storeGaleri(Request $request)
+    {
+        $request->validate([
+            'judul' => 'required|string|max:255',
+            'periode' => 'required|string|max:255', // Misal: "Jan - Mar 2025"
+            'foto' => 'required|image|max:10240',   // Max 10MB (Aman, nanti kita kecilkan)
+            'deskripsi' => 'nullable|string',
+        ]);
+
+        if ($request->hasFile('foto')) {
+            // 1. Siapkan Manager Gambar
+            $manager = new ImageManager(new Driver());
+            $image = $manager->read($request->file('foto'));
+
+            // 2. Resize & Convert ke WebP
+            $image->scaleDown(width: 800); // Lebar maks 800px
+            $encoded = $image->toWebp(quality: 80);
+
+            // 3. Simpan File
+            $filename = 'galeri_' . time() . '_' . uniqid() . '.webp';
+            $path = 'galeris/' . $filename;
+            Storage::disk('public')->put($path, $encoded);
+
+            // 4. Simpan ke Database
+            Galeri::create([
+                'judul' => $request->judul,
+                'periode' => $request->periode,
+                'deskripsi' => $request->deskripsi,
+                'foto_path' => $path
+            ]);
+        }
+
+        return back()->with('success', 'Foto berhasil ditambahkan ke Galeri (Format WebP).');
+    }
+
+    public function destroyGaleri($id)
+    {
+        $item = Galeri::findOrFail($id);
+
+        // Hapus file fisik
+        if ($item->foto_path && Storage::exists($item->foto_path)) {
+            Storage::delete($item->foto_path);
+        }
+
+        // Hapus data DB
+        $item->delete();
+
+        return back()->with('success', 'Foto galeri berhasil dihapus.');
+    }
+
+    // UPDATE KUOTA PERIODE KHUSUS --------------------------------------------------------
+    public function updateKuotaPeriode(Request $request)
+    {
+        $request->validate([
+            'bulan' => 'required|integer',
+            'tahun' => 'required|integer',
+            'kuota' => 'required|integer|min:0'
+        ]);
+
+        // Update atau Buat Baru (Upsert)
+        KuotaPeriode::updateOrCreate(
+            ['bulan' => $request->bulan, 'tahun' => $request->tahun], // Kondisi pencarian
+            ['kuota' => $request->kuota] // Nilai yang diupdate
+        );
+
+        // CEGAH OPERATOR MASUK SINI
+        Gate::authorize('admin-only');
+
+        return back()->with('success', 'Kuota untuk periode tersebut berhasil diubah.');
     }
 }
