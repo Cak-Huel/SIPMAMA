@@ -1,64 +1,142 @@
-# SIPMAMA
-Sistem yang digunakan sebagai penerimaan mahasiswa magang dan juga tempat presensi mahasiswa yang telah diterima oleh pihak instansi.
+# SIPMAMA - Sistem Informasi Penerimaan Mahasiswa Magang
 
-<p align="center">Halaman Dashboard</p>
-<p align="center"><img src="screenshoot/dashboard.png" width="700" alt="Dashboard"></p>
+**SIPMAMA** adalah sebuah sistem informasi berbasis web yang dirancang untuk mengelola proses penerimaan mahasiswa magang dan memfasilitasi pencatatan kehadiran (presensi) secara digital. Aplikasi ini dibangun untuk menyederhanakan alur kerja bagi calon pendaftar dan admin instansi.
 
-<p align="center">Halaman Profil</p>
-<p align="center"><img src="screenshoot/profil.png" width="700" alt="Profil"></p>
+## ✨ Fitur Utama
 
-<p align="center">Halaman Presensi</p>
-<p align="center"><img src="screenshoot/presensi.png" width="700" alt="Presensi"></p>
+Berdasarkan analisis kode, sistem ini memiliki fitur-fitur berikut:
 
-<p align="center">Halaman Data Presensi</p>
-<p align="center"><img src="screenshoot/data-presensi.png" width="700" alt="Data Presensi"></p>
+### Untuk Mahasiswa (Pendaftar)
+- **Pendaftaran & Otentikasi**: Registrasi akun, login, dan verifikasi email.
+- **Pengajuan Formulir Magang**: Mengisi formulir pendaftaran online dengan unggah dokumen (proposal, surat rekomendasi).
+- **Dasbor & Profil**: Memantau status pendaftaran (`Menunggu`, `Lolos`, `Ditolak`, `Perlu Revisi`) di halaman profil.
+- **Revisi Pendaftaran**: Kemampuan untuk memperbaiki dan mengirim ulang formulir jika diminta oleh admin.
+- **Sistem Presensi**: Mencatat kehadiran harian (datang & pulang) setelah diterima.
+- **Pusat Informasi**: Mengakses informasi kuota magang, syarat & ketentuan, galeri kegiatan, dan FAQ.
+- **Notifikasi Email**: Menerima pemberitahuan email otomatis saat status pendaftaran diperbarui.
 
-<p align="center">Halaman Kelola Pendaftar</p>
-<p align="center"><img src="screenshoot/kelola-pendaftar.png" width="700" alt="Kelola Pendaftar"></p>
+### Untuk Admin & Operator
+- **Dasbor Analitik**: Ringkasan data pendaftar harian, pendaftar menunggu verifikasi, sisa kuota bulanan, dan grafik tren pendaftaran.
+- **Manajemen Pendaftar**:
+    - Melihat, memfilter (berdasarkan status, periode), dan mencari data pendaftar.
+    - Memverifikasi pendaftaran (`Lolos`, `Ditolak`, `Perlu Revisi`) dengan kolom catatan.
+    - Mengunduh dokumen pendaftar dan mengekspor data ke format CSV.
+- **Manajemen Presensi**: Memantau dan merekap data kehadiran, serta mengekspornya ke CSV.
+- **Manajemen Konten Situs**:
+    - Mengelola kuota magang (kuota global dan kuota khusus per periode).
+    - Memperbarui halaman Syarat & Ketentuan, Poster, Galeri, dan FAQ.
+- **Manajemen Hak Akses (Khusus Admin)**: Mengelola akun dengan peran 'Operator'.
 
-<p align="center">Halaman Verifikasi</p>
-<p align="center"><img src="screenshoot/verifikasi.png" width="700" alt="Verifikasi"></p>
+## 🚀 Teknologi yang Digunakan
 
-<p align="center">Halaman Informasi</p>
-<p align="center"><img src="screenshoot/informasi.png" width="700" alt="Informasi"></p>
+- **Backend**: PHP 8+ dengan Laravel
+- **Frontend**: Tailwind CSS, Blade
+- **Database**: MySQL / MariaDB
+- **Tools**: Composer, NPM
 
-<p align="center">Halaman Galeri</p>
-<p align="center"><img src="screenshoot/galeri.png" width="700" alt="Galeri"></p>
+## 🛠️ Instalasi & Konfigurasi Lokal
 
-<p align="center">Halaman FAQ</p>
-<p align="center"><img src="screenshoot/FAQ.png" width="700" alt="FAQ"></p>
+Untuk menjalankan proyek ini di lingkungan lokal Anda, ikuti langkah-langkah berikut:
 
-<p align="center">Halaman Login</p>
-<p align="center"><img src="screenshoot/login.png" width="700" alt="Login"></p>
+1.  **Clone repository:**
+    ```bash
+    git clone [URL_REPOSITORY_ANDA] sipmama
+    cd sipmama
+    ```
 
-<p align="center">Halaman Daftar Akun</p>
-<p align="center"><img src="screenshoot/daftar-akun.png" width="700" alt="Daftar Akun"></p>
+2.  **Install dependensi PHP via Composer:**
+    ```bash
+    composer install
+    ```
 
-<p align="center">Halaman Formulir</p>
-<p align="center"><img src="screenshoot/formulir.png" width="700" alt="Formulir"></p>
+3.  **Salin file environment:**
+    ```bash
+    cp .env.example .env
+    ```
 
-<p align="center">Halaman Dashboard Admin</p>
-<p align="center"><img src="screenshoot/dashboard-admin.png" width="700" alt="Dashboard Admin"></p>
+4.  **Generate kunci aplikasi Laravel:**
+    ```bash
+    php artisan key:generate
+    ```
 
-<p align="center">Halaman Kelola Informasi</p>
-<p align="center"><img src="screenshoot/kelola-informasi.png" width="700" alt="Kelola Informasi"></p>
+5.  **Konfigurasi Database:**
+    Buka file `.env` dan sesuaikan variabel `DB_DATABASE`, `DB_USERNAME`, dan `DB_PASSWORD` dengan konfigurasi lokal Anda.
 
-<p align="center">Halaman Kelola Kuota</p>
-<p align="center"><img src="screenshoot/kelola-kuota.png" width="700" alt="Kelola Kuota"></p>
+6.  **Jalankan migrasi database:**
+    ```bash
+    php artisan migrate
+    ```
+    *(Opsional) Jika proyek memiliki seeder, jalankan juga `php artisan db:seed`.*
 
-<p align="center">Halaman Kelola Galeri</p>
-<p align="center"><img src="screenshoot/kelola-galeri.png" width="700" alt="Kelola Galeri"></p>
+7.  **Buat tautan simbolis (symlink) untuk storage:**
+    ```bash
+    php artisan storage:link
+    ```
 
-<p align="center">Halaman Kelola FAQ</p>
-<p align="center"><img src="screenshoot/kelola-FAQ.png" width="700" alt="Kelola FAQ"></p>
+8.  **Install dependensi frontend & compile assets:**
+    ```bash
+    npm install
+    npm run dev
+    ```
 
-<p align="center">Halaman Kelola Operator</p>
-<p align="center"><img src="screenshoot/kelola-operator.png" width="700" alt="Kelola Operator"></p>
+9.  **Jalankan server development:**
+    ```bash
+    php artisan serve
+    ```
+    Aplikasi akan dapat diakses di `http://127.0.0.1:8000`.
 
-<p align="center">Halaman Profil Admin</p>
-<p align="center"><img src="screenshoot/profil-admin.png" width="700" alt="Profil Admin"></p>
+## 📸 Tampilan Aplikasi
 
-<<<<<<< HEAD
+Berikut adalah beberapa tangkapan layar dari fitur-fitur utama aplikasi.
+
+<details>
+<summary><b>Klik untuk melihat galeri tangkapan layar</b></summary>
+<br>
+<table width="100%">
+    <tr>
+        <td align="center"><b>Dasbor Pengguna</b><br><img src="screenshoot/dashboard.png" alt="Dashboard Pengguna"></td>
+        <td align="center"><b>Halaman Informasi</b><br><img src="screenshoot/informasi.png" alt="Halaman Informasi"></td>
+    </tr>
+    <tr>
+        <td align="center"><b>Halaman Galeri</b><br><img src="screenshoot/galeri.png" alt="Halaman Galeri"></td>
+        <td align="center"><b>Halaman FAQ</b><br><img src="screenshoot/FAQ.png" alt="Halaman FAQ"></td>
+    </tr>
+    <tr>
+        <td align="center"><b>Halaman Login</b><br><img src="screenshoot/login.png" alt="Halaman Login"></td>
+        <td align="center"><b>Halaman Daftar Akun</b><br><img src="screenshoot/daftar-akun.png" alt="Halaman Daftar Akun"></td>
+    </tr>
+    <tr>
+        <td align="center"><b>Profil Pengguna</b><br><img src="screenshoot/profil.png" alt="Profil Pengguna"></td>
+        <td align="center"><b>Halaman Formulir</b><br><img src="screenshoot/formulir.png" alt="Halaman Formulir"></td>
+    </tr>
+    <tr>
+        <td align="center"><b>Halaman Presensi</b><br><img src="screenshoot/presensi.png" alt="Halaman Presensi"></td>
+        <td align="center"><b>Dashboard Admin</b><br><img src="screenshoot/dashboard-admin.png" alt="Dashboard Admin"></td>
+    </tr>
+    <tr>
+        <td align="center"><b>Halaman Pendaftar</b><br><img src="screenshoot/kelola-pendaftar.png" alt="Halaman Pendaftar"></td>
+        <td align="center"><b>Halaman Verifikasi</b><br><img src="screenshoot/verifikasi.png" alt="Halaman Verifikasi"></td>
+    </tr>
+    <tr>
+        <td align="center"><b>Halaman Kelola Informasi</b><br><img src="screenshoot/kelola-informasi.png" alt="Halaman Kelola Informasi"></td>
+        <td align="center"><b>Halaman Kelola Kuota</b><br><img src="screenshoot/kelola-kuota.png" alt="Halaman Kelola Kuota"></td>
+    </tr>
+    <tr>
+        <td align="center"><b>Halaman Kelola Galeri</b><br><img src="screenshoot/kelola-galeri.png" alt="Halaman Kelola Galeri"></td>
+        <td align="center"><b>Halaman Kelola FAQ</b><br><img src="screenshoot/kelola-FAQ.png" alt="Halaman Kelola FAq"></td>
+    </tr>
+    <tr>
+        <td align="center"><b>Data Presensi</b><br><img src="screenshoot/data-presensi.png" alt="Data Presensi"></td>
+        <td align="center"><b>Halaman Kelola Operator</b><br><img src="screenshoot/kelola-operator.png" alt="Halaman Kelola Operator"></td>
+    </tr>
+    <tr>
+        <td align="center"><b>Profil Admin</b><br><img src="screenshoot/profil-admin.png" alt="Profil Admin"></td>
+    </tr>
+</table>
+</details>
+
+
+=======================================================================
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
