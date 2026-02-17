@@ -1,3 +1,63 @@
+# SIPMAMA
+Sistem yang digunakan sebagai penerimaan mahasiswa magang dan juga tempat presensi mahasiswa yang telah diterima oleh pihak instansi.
+
+![Screenshot Aplikasi](screenshoot/dashboard.png)
+Halaman Dashboard
+
+![Screenshot Aplikasi](screenshoot/informasi.png)
+Halaman Informasi
+
+![Screenshot Aplikasi](screenshoot/galeri.png)
+Halaman Galeri
+
+![Screenshot Aplikasi](screenshoot/FAQ.png)
+Halaman FAQ
+
+![Screenshot Aplikasi](screenshoot/login.png)
+Halaman Login
+
+![Screenshot Aplikasi](screenshoot/daftar-akun.png)
+Halaman Daftar Akun
+
+![Screenshot Aplikasi](screenshoot/formulir.png)
+Halaman Formulir
+
+![Screenshot Aplikasi](screenshoot/profil.png)
+Halaman Profil
+
+![Screenshot Aplikasi](screenshoot/presensi.png)
+Halaman Presensi
+
+![Screenshot Aplikasi](screenshoot/dashboard-admin.png)
+Halaman Dashboard Admin
+
+![Screenshot Aplikasi](screenshoot/kelola-pendaftar.png)
+Halaman Kelola Pendaftar
+
+![Screenshot Aplikasi](screenshoot/verifikasi.png)
+Halaman Verifikasi
+
+![Screenshot Aplikasi](screenshoot/kelola-informasi.png)
+Halaman Kelola Informasi
+
+![Screenshot Aplikasi](screenshoot/kelola-kuota.png)
+Halaman Kelola Kuota
+
+![Screenshot Aplikasi](screenshoot/kelola-galeri.png)
+Halaman Kelola Galeri
+
+![Screenshot Aplikasi](screenshoot/kelola-FAQ.png)
+Halaman Kelola FAQ
+
+![Screenshot Aplikasi](screenshoot/kelola-operator.png)
+Halaman Kelola Operator
+
+![Screenshot Aplikasi](screenshoot/data-presensi.png)
+Halaman Data Presensi
+
+![Screenshot Aplikasi](screenshoot/profil-admin.png)
+Halaman Profil Admin
+
 <<<<<<< HEAD
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
@@ -59,6 +119,3 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
 =======
-# SIPMAMA
-Sistem yang digunakan sebagai penerimaan mahasiswa magang dan juga tempat presensi mahasiswa yang telah diterima oleh pihak instansi.
->>>>>>> 26523b7a2ad663d6117b04817432700ef5b8383c
